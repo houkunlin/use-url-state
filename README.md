@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/@houkunlin/use-url-state.svg?style=flat)](https://www.npmjs.com/package/@houkunlin/use-url-state)
 [![NPM downloads](http://img.shields.io/npm/dm/@houkunlin/use-url-state.svg?style=flat)](https://www.npmjs.com/package/@houkunlin/use-url-state)
 
-一个用于读取 `window.location.search` 和 `window.location.hash` 查询参数信息的 hooks 工具。
+一个用于读取、设置 `window.location.search` 和 `window.location.hash` 查询参数信息的 hooks 工具。
 
 - `useUrlParamsState` - 从 `window.location.search` 和 `window.location.hash` 中读取参数，返回 `URLSearchParams` 类型参数对象
 - `useUrlState` - 从 `window.location.search` 和 `window.location.hash` 中读取参数，返回普通参数对象
@@ -11,7 +11,6 @@
 - `useUrlHashState` - 从 `window.location.hash` 中读取参数，返回普通参数对象
 - `useUrlSearchParamsState` - 从 `window.location.search` 中读取参数，返回 `URLSearchParams` 类型参数对象
 - `useUrlSearchState` - 从 `window.location.search` 中读取参数，返回普通参数对象
-
 
 ## 安装
 
