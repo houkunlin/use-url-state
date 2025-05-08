@@ -1,43 +1,59 @@
-# use-url-state
+# `@houkunlin/use-url-state`
 
-[![NPM version](https://img.shields.io/npm/v/use-url-state.svg?style=flat)](https://npmjs.org/package/use-url-state)
-[![NPM downloads](http://img.shields.io/npm/dm/use-url-state.svg?style=flat)](https://npmjs.org/package/use-url-state)
+一个用于读取 `window.location.search` 和 `window.location.hash` 查询参数信息的 hooks 工具。
 
-A react library developed with dumi
+- `useUrlParamsState` - 从 `window.location.search` 和 `window.location.hash` 中读取参数，返回 `URLSearchParams` 类型参数对象
+- `useUrlState` - 从 `window.location.search` 和 `window.location.hash` 中读取参数，返回普通参数对象
+- `useUrlHashParamsState` - 从 `window.location.hash` 中读取参数，返回 `URLSearchParams` 类型参数对象
+- `useUrlHashState` - 从 `window.location.hash` 中读取参数，返回普通参数对象
+- `useUrlSearchParamsState` - 从 `window.location.search` 中读取参数，返回 `URLSearchParams` 类型参数对象
+- `useUrlSearchState` - 从 `window.location.search` 中读取参数，返回普通参数对象
 
-## Usage
 
-TODO
+## 安装
 
-## Options
-
-TODO
-
-## Development
-
-```bash
-# install dependencies
-$ npm install
-
-# develop library by docs demo
-$ npm start
-
-# build library source code
-$ npm run build
-
-# build library source code in watch mode
-$ npm run build:watch
-
-# build docs
-$ npm run docs:build
-
-# Locally preview the production build.
-$ npm run docs:preview
-
-# check your project for potential problems
-$ npm run doctor
+```npm
+npm install @houkunlin/use-url-state
 ```
 
-## LICENSE
+## 基本用法
 
-MIT
+```js
+import useUrlState, {
+  useUrlParamsState,
+  useUrlHashParamsState,
+  useUrlHashState,
+  useUrlSearchParamsState,
+  useUrlSearchState,
+} from '@houkunlin/use-url-state';
+
+const [query, setQuery] = useUrlState();
+const [query, setQuery] = useUrlState({ count: 0, page: 1 });
+
+const [query, setQuery] = useUrlParamsState();
+const [query, setQuery] = useUrlParamsState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlParamsState(new URLSearchParams('count=0&page=1'));
+
+const [query, setQuery] = useUrlHashState();
+const [query, setQuery] = useUrlHashState({ count: 0, page: 1 });
+
+const [query, setQuery] = useUrlHashParamsState();
+const [query, setQuery] = useUrlHashParamsState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlHashParamsState(new URLSearchParams('count=0&page=1'));
+
+const [query, setQuery] = useUrlSearchState();
+const [query, setQuery] = useUrlSearchState({ count: 0, page: 1 });
+
+const [query, setQuery] = useUrlSearchParamsState();
+const [query, setQuery] = useUrlSearchParamsState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlSearchParamsState(new URLSearchParams('count=0&page=1'));
+```
+
+## 文档
+
+- [useUrlParamsState 文档](./src/useUrlParamsState)
+- [useUrlState 文档](./src/useUrlState)
+- [useUrlHashParamsState 文档](./src/useUrlHashParamsState)
+- [useUrlHashState 文档](./src/useUrlHashState)
+- [useUrlSearchParamsState 文档](./src/useUrlSearchParamsState)
+- [useUrlSearchState 文档](./src/useUrlSearchState)

@@ -15,3 +15,31 @@ export function toObj<S = any>(urlSearchParams: URLSearchParams): Partial<{ [key
   }
   return obj;
 }
+
+/**
+ * 设置 window.location.hash 值
+ * @param hashPath
+ * @param urlSearchParams
+ */
+export function setWindowLocationHash(hashPath: string, urlSearchParams: URLSearchParams) {
+  const query = urlSearchParams.toString();
+  if (query.length !== 0) {
+    window.location.hash = hashPath + '?' + query;
+  } else {
+    window.location.hash = hashPath;
+  }
+}
+
+/**
+ * 设置 window.location.search 值，但是为了设置值后不刷新页面，因此使用 window.history.replaceState 来替代
+ * @param urlSearchParams
+ */
+export function setWindowLocationSearch(urlSearchParams: URLSearchParams) {
+  const query = urlSearchParams.toString();
+  // window.location.search = query;
+  if (query.length !== 0) {
+    window.history.replaceState({}, '', `${window.location.pathname}?${query}`);
+  } else {
+    window.history.replaceState({}, '', `${window.location.pathname}`);
+  }
+}

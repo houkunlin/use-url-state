@@ -1,17 +1,51 @@
 {
   "compilerOptions": {
     "target": "ES2022",
+    "isolatedModules": false,
+    "importHelpers": false,
+    "downlevelIteration": true,
     "strict": true,
     "declaration": true,
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "jsx": "react",
     "baseUrl": "./",
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es2018",
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ],
+    "experimentalDecorators": true,
     "paths": {
-      "@@/*": [".dumi/tmp/*"],
-      "use-url-state": ["src"],
-      "use-url-state/*": ["src/*", "*"]
+      "@@/*": [
+        ".dumi/tmp/*"
+      ],
+      "@houkunlin/use-url-state": [
+        "src"
+      ],
+      "@houkunlin/use-url-state/*": [
+        "src/*",
+        "*"
+      ]
     }
   },
-  "include": [".dumirc.ts", "src/**/*"]
+  "include": [
+    ".dumirc.ts",
+    "src/**/*"
+  ]
 }
