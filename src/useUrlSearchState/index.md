@@ -23,10 +23,18 @@ useEffect(() => {
 ```js
 const [query, setQuery] = useUrlSearchState();
 const [query, setQuery] = useUrlSearchState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlSearchState({ count: 0, page: 1 }, { initParamsToSearch: true });
 ```
 
 ### 参数列表
 
-| 参数         | 类型                             | 说明       |
-| ------------ | -------------------------------- | ---------- |
-| initialState | <code>Record<string, any></code> | 初始化参数 |
+| 参数         | 类型                                        | 说明       |
+| ------------ | ------------------------------------------- | ---------- |
+| initialState | <code>Record<string, any></code>            | 初始化参数 |
+| options      | <code>UseUrlSearchParamsStateOptions</code> | 参数设置   |
+
+#### UseUrlSearchParamsStateOptions
+
+| 参数               | 类型                 | 说明                      |
+| ------------------ | -------------------- | ------------------------- |
+| initParamsToSearch | <code>boolean</code> | 初始参数是否设置到 search |

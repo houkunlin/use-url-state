@@ -23,10 +23,18 @@ useEffect(() => {
 ```js
 const [query, setQuery] = useUrlHashState();
 const [query, setQuery] = useUrlHashState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlHashState({ count: 0, page: 1 }, { initParamsToHash: true });
 ```
 
 ### 参数列表
 
-| 参数         | 类型                             | 说明       |
-| ------------ | -------------------------------- | ---------- |
-| initialState | <code>Record<string, any></code> | 初始化参数 |
+| 参数         | 类型                                      | 说明       |
+| ------------ | ----------------------------------------- | ---------- |
+| initialState | <code>Record<string, any></code>          | 初始化参数 |
+| options      | <code>UseUrlHashParamsStateOptions</code> | 参数设置   |
+
+#### UseUrlHashParamsStateOptions
+
+| 参数             | 类型                 | 说明                    |
+| ---------------- | -------------------- | ----------------------- |
+| initParamsToHash | <code>boolean</code> | 初始参数是否设置到 hash |

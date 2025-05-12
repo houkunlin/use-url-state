@@ -1,4 +1,4 @@
-import { useUrlSearchParamsState } from '@houkunlin/use-url-state';
+import { useUrlSearchParamsState, UseUrlSearchParamsStateOptions } from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
@@ -16,12 +16,16 @@ import { toObj } from '../utils';
  * </p>
  *
  * @param initialState 初始化参数信息
+ * @param options 参数设置
  * @return [query, setQuery] query：UrlState，setQuery：设置 UrlState
  */
-function useUrlSearchState<S extends UrlState = UrlState>(initialState?: S | (() => S)) {
+function useUrlSearchState<S extends UrlState = UrlState>(
+  initialState?: S | (() => S),
+  options?: UseUrlSearchParamsStateOptions,
+) {
   type State = Partial<{ [key in keyof S]: string }>;
 
-  const [query, setQuery] = useUrlSearchParamsState(initialState);
+  const [query, setQuery] = useUrlSearchParamsState(initialState, options);
 
   const targetQuery: State = useMemo(() => toObj(query), [query]);
 
