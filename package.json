@@ -1,6 +1,6 @@
 {
   "name": "@houkunlin/use-url-state",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "一个用于读取、设置 window.location.search 和 window.location.hash 查询参数信息的 hooks 工具",
   "license": "MIT",
   "module": "dist/index.js",
