@@ -30,14 +30,14 @@ function stateToURLSearchParams(state: UrlState) {
  * @param options 参数设置
  * @return [query, setQuery] query：UrlState，setQuery：设置 UrlState
  */
-function useUrlState<S1 extends UrlState = UrlState, S2 extends UrlState = UrlState>(
+function useUrlState<S1 extends UrlState = UrlState, S2 extends UrlState = UrlState, S_ALL = S1 & S2>(
   searchInitialState?: S1 | (() => S1),
   hashInitialState?: S2 | (() => S2),
   options?: UseUrlParamsStateOptions,
 ) {
-  type State = Partial<{ [key in keyof S1]: string }>;
   type State1 = Partial<{ [key in keyof S1]: string }>;
   type State2 = Partial<{ [key in keyof S2]: string }>;
+  type State = Partial<{ [key in keyof S_ALL]: string }>;
 
   const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState(
     searchInitialState,
