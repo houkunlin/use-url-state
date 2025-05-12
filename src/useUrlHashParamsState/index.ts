@@ -1,6 +1,6 @@
-import { setWindowLocationHash, UrlParamsState } from '@houkunlin/use-url-state';
+import { getHashInfo, setWindowLocationHash, UrlParamsState } from '@houkunlin/use-url-state';
 import type * as React from 'react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
 import useUpdate from '../ahooks/useUpdate';
 
@@ -19,20 +19,22 @@ import useUpdate from '../ahooks/useUpdate';
  */
 function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
   const update = useUpdate();
+  const [[hashPath, hashQuery], setHashInfo] = useState<[string, string, boolean]>(getHashInfo);
 
   const initialStateRef = useRef(
     typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {},
   );
   // const targetInitialStateStr = JSON.stringify(initialStateRef.current);
 
-  const [hashPath, hashQuery] = useMemo(() => {
-    const hash = window.location.hash;
-    const index = hash.indexOf('?');
-    if (index < 0) {
-      return [hash, '', window.location.search, false];
-    }
-    return [hash.substring(0, index), hash.substring(index + 1)];
-  }, [window.location.hash]);
+  useEffect(() => {
+    const fn = () => {
+      setHashInfo(getHashInfo());
+    };
+    window.addEventListener('hashchange', fn);
+    return () => {
+      window.removeEventListener('hashchange', fn);
+    };
+  }, []);
 
   const targetQuery = useMemo(() => {
     const urlSearchParams = new URLSearchParams(initialStateRef.current ?? {});

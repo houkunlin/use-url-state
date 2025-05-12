@@ -19,6 +19,9 @@ useEffect(() => {
 
 <code src="./demo/demo1.tsx"></code>
 
+与上面完全相同的示例
+<code src="./demo/demo1.tsx"></code>
+
 ### API
 
 ```js
@@ -28,6 +31,6 @@ const [query, setQuery] = useUrlState({ count: 0, page: 1 });
 
 ### 参数列表
 
-| 参数           | 类型                               | 说明    |
-|--------------|----------------------------------|-------|
+| 参数         | 类型                             | 说明       |
+| ------------ | -------------------------------- | ---------- |
 | initialState | <code>Record<string, any></code> | 初始化参数 |

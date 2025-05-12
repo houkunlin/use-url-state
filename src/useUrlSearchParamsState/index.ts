@@ -19,15 +19,12 @@ import useUpdate from '../ahooks/useUpdate';
  */
 function useUrlSearchParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
   const update = useUpdate();
+  const searchQuery = window.location.search;
 
   const initialStateRef = useRef(
     typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {},
   );
   // const targetInitialStateStr = JSON.stringify(initialStateRef.current);
-
-  const [hashPath, hashQuery, searchQuery] = useMemo(() => {
-    return ['', '', window.location.search];
-  }, [window.location.search]);
 
   const targetQuery = useMemo(() => {
     const urlSearchParams = new URLSearchParams(initialStateRef.current ?? {});
@@ -44,7 +41,7 @@ function useUrlSearchParamsState(initialState?: UrlParamsState | (() => UrlParam
     }
 
     return urlSearchParams;
-  }, [hashPath, hashQuery, searchQuery /*, targetInitialStateStr*/]);
+  }, [searchQuery /*, targetInitialStateStr*/]);
 
   const setState = (s: React.SetStateAction<URLSearchParams>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
