@@ -54,7 +54,7 @@ function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsS
   }, [hashPath, hashQuery /*, targetInitialStateStr*/]);
 
   const setState = (s: React.SetStateAction<URLSearchParams>) => {
-    const newQuery = typeof s === 'function' ? s(targetQuery) : s;
+    const newQuery = typeof s === 'function' ? s(new URLSearchParams(targetQuery)) : s;
 
     // 1. 如果 setState 后，search 没变化，就需要 update 来触发一次更新。比如 demo1 直接点击 clear，就需要 update 来触发更新。
     // 2. update 和 history 的更新会合并，不会造成多次更新
