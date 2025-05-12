@@ -1,4 +1,10 @@
-export function toObj<S = any>(urlSearchParams: URLSearchParams): Partial<{ [key in keyof S]: string }> {
+import { UrlParamsState } from '@houkunlin/use-url-state';
+
+/**
+ * 把 URLSearchParams 转换成数据对象
+ * @param urlSearchParams URLSearchParams
+ */
+export function toState<S = any>(urlSearchParams: URLSearchParams): Partial<{ [key in keyof S]: string }> {
   type State = Partial<{ [key in keyof S]: string }>;
   const keys = new Set<string>();
   for (const key of urlSearchParams.keys()) {
@@ -14,6 +20,45 @@ export function toObj<S = any>(urlSearchParams: URLSearchParams): Partial<{ [key
     obj[key] = values.length === 1 ? values[0] : values;
   }
   return obj;
+}
+
+/**
+ * 循环参数对象，回调值内容，并把对象中 key 值为 null 或 undefined 的数据返回空字符串
+ * @param state 参数对象
+ * @param fn 回调方法
+ */
+export function forEachUrlParamsState(state?: UrlParamsState, fn?: (key: string, value: string) => void) {
+  if (fn === null || fn === undefined) {
+    return;
+  }
+  if (state instanceof URLSearchParams) {
+    state.forEach((value, key) => fn(key, value));
+    return;
+  }
+  if (state === null || state === undefined) {
+    return;
+  }
+  const keys = Object.keys(state);
+  for (const key of keys) {
+    const o = state[key];
+    if (!(o instanceof Array)) {
+      fn(key, `${o || ''}`);
+    } else {
+      o.forEach((value) => {
+        fn(key, `${value || ''}`);
+      });
+    }
+  }
+}
+
+/**
+ * 把数据对象转换成 URLSearchParams 对象
+ * @param state 数据对象
+ */
+export function toURLSearchParams(state?: UrlParamsState) {
+  const urlSearchParams = new URLSearchParams();
+  forEachUrlParamsState(state, (key, value) => urlSearchParams.append(key, value));
+  return urlSearchParams;
 }
 
 /**

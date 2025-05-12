@@ -1,9 +1,13 @@
-import { useUrlSearchParamsState, UseUrlSearchParamsStateOptions } from '@houkunlin/use-url-state';
+import {
+  toURLSearchParams,
+  UrlState,
+  useUrlSearchParamsState,
+  UseUrlSearchParamsStateOptions,
+} from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
-import { UrlState } from '../useUrlState';
-import { toObj } from '../utils';
+import { toState } from '../utils';
 
 /**
  * 从 <code>window.location.search</code>中读取查询参数信息。
@@ -27,16 +31,12 @@ function useUrlSearchState<S extends UrlState = UrlState>(
 
   const [query, setQuery] = useUrlSearchParamsState(initialState, options);
 
-  const targetQuery: State = useMemo(() => toObj(query), [query]);
+  const targetQuery: State = useMemo(() => toState(query), [query]);
 
   const setState = (s: React.SetStateAction<State>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
 
-    const urlSearchParams = new URLSearchParams();
-    for (const key of Object.keys(newQuery)) {
-      // @ts-ignore
-      urlSearchParams.append(key, newQuery[key]);
-    }
+    const urlSearchParams = toURLSearchParams(newQuery);
 
     setQuery(urlSearchParams);
   };

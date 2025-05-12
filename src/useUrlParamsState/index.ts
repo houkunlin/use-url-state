@@ -1,11 +1,13 @@
-import { useUrlHashParamsState, useUrlSearchParamsState } from '@houkunlin/use-url-state';
-import { UseUrlHashParamsStateOptions } from '@houkunlin/use-url-state/useUrlHashParamsState';
-import { UseUrlSearchParamsStateOptions } from '@houkunlin/use-url-state/useUrlSearchParamsState';
+import {
+  UrlParamsState,
+  useUrlHashParamsState,
+  UseUrlHashParamsStateOptions,
+  useUrlSearchParamsState,
+  UseUrlSearchParamsStateOptions,
+} from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
-
-export type UrlParamsState = Record<string, any> | URLSearchParams;
 
 export type UseUrlParamsStateOptions = {
   /**

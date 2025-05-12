@@ -21,5 +21,8 @@ export * from './utils/index';
 export * from './useUrlParamsState';
 export { default as useUrlParamsState } from './useUrlParamsState';
 
+export type UrlState = Record<string, string | number | null | undefined | (string | number | null | undefined)[]>;
+export type UrlParamsState = UrlState | URLSearchParams;
+
 export { useUrlState };
 export default useUrlState;

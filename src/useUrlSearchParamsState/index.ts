@@ -1,4 +1,4 @@
-import { setWindowLocationSearch, UrlParamsState } from '@houkunlin/use-url-state';
+import { setWindowLocationSearch, toURLSearchParams, UrlParamsState } from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
@@ -38,7 +38,7 @@ function useUrlSearchParamsState(
   // const targetInitialStateStr = JSON.stringify(initialStateRef.current);
 
   const targetQuery = useMemo(() => {
-    const urlSearchParams = new URLSearchParams(initialStateRef.current ?? {});
+    const urlSearchParams = toURLSearchParams(initialStateRef.current);
 
     const searchQueryParams = new URLSearchParams(searchQuery);
     for (const key of searchQueryParams.keys()) {

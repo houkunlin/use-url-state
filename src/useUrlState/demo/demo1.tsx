@@ -2,9 +2,22 @@ import useUrlState from '@houkunlin/use-url-state';
 import React, { useEffect } from 'react';
 
 export default () => {
-  const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlState<any, any>({
-    count: 0,
-  });
+  const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlState(
+    {
+      count: 0,
+      sum0: 0,
+      aa: null,
+    },
+    {
+      sum1: 0,
+      bb: undefined,
+      cc: [1, 2, null],
+    },
+    {
+      initParamsToSearch: false,
+      initParamsToHash: false,
+    },
+  );
   const count = parseInt(query.count || '0');
   const searchSum0 = parseInt(searchQuery.sum0 || '0');
   const hashSum1 = parseInt(hashQuery.sum1 || '0');

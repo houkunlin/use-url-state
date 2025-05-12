@@ -1,14 +1,8 @@
-import { useUrlParamsState, UseUrlParamsStateOptions } from '@houkunlin/use-url-state';
+import { toURLSearchParams, UrlState, useUrlParamsState, UseUrlParamsStateOptions } from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
-import { toObj } from '../utils';
-
-export type UrlState = Record<string, any>;
-
-function stateToURLSearchParams(state: UrlState) {
-  return new URLSearchParams(state);
-}
+import { toState } from '../utils';
 
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
@@ -45,24 +39,30 @@ function useUrlState<S1 extends UrlState = UrlState, S2 extends UrlState = UrlSt
     options,
   );
 
-  const targetQuery: State = useMemo(() => toObj(query), [query]);
-  const searchQueryState: State1 = useMemo(() => toObj(searchQuery), [searchQuery]);
-  const hashQueryState: State2 = useMemo(() => toObj(hashQuery), [hashQuery]);
+  const targetQuery: State = useMemo(() => toState(query), [query]);
+  const searchQueryState: State1 = useMemo(() => toState(searchQuery), [searchQuery]);
+  const hashQueryState: State2 = useMemo(() => toState(hashQuery), [hashQuery]);
 
   const setState = (s: React.SetStateAction<State>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
 
-    setQuery(stateToURLSearchParams(newQuery));
+    const urlSearchParams = toURLSearchParams(newQuery);
+
+    setQuery(urlSearchParams);
   };
   const setSearchState = (s: React.SetStateAction<State1>) => {
     const newQuery = typeof s === 'function' ? s(searchQueryState) : s;
 
-    setSearchQuery(stateToURLSearchParams(newQuery));
+    const urlSearchParams = toURLSearchParams(newQuery);
+
+    setSearchQuery(urlSearchParams);
   };
   const setHashState = (s: React.SetStateAction<State2>) => {
     const newQuery = typeof s === 'function' ? s(hashQueryState) : s;
 
-    setHashQuery(stateToURLSearchParams(newQuery));
+    const urlSearchParams = toURLSearchParams(newQuery);
+
+    setHashQuery(urlSearchParams);
   };
 
   return [
