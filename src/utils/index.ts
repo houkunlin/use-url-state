@@ -38,8 +38,8 @@ export function setWindowLocationSearch(urlSearchParams: URLSearchParams) {
   const query = urlSearchParams.toString();
   // window.location.search = query;
   if (query.length !== 0) {
-    window.history.replaceState({}, '', `${window.location.pathname}?${query}`);
+    window.history.replaceState({}, '', `${window.location.pathname}?${query}${window.location.hash}`);
   } else {
-    window.history.replaceState({}, '', `${window.location.pathname}`);
+    window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`);
   }
 }
