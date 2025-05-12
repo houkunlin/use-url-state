@@ -6,12 +6,9 @@ export default () => {
     {
       count: 0,
       sum0: 0,
-      aa: null,
     },
     {
       sum1: 0,
-      bb: undefined,
-      cc: [1, 2, null],
     },
     {
       initParamsToSearch: false,
