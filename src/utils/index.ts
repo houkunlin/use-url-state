@@ -13,6 +13,12 @@ export function toState<S = any>(urlSearchParams: URLSearchParams): Partial<{ [k
   const obj: State = {};
   for (const key of keys) {
     const values = urlSearchParams.getAll(key);
+    if (key.endsWith('[]')) {
+      // 把以中括号结束的 key 强制设置值为数组类型
+      // @ts-ignore
+      obj[key] = values;
+      continue;
+    }
     if (values.length === 0) {
       continue;
     }
