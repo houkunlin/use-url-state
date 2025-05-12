@@ -45,15 +45,15 @@ export function setWindowLocationSearch(urlSearchParams: URLSearchParams) {
 }
 
 /**
- * 获取 hash 信息
+ * 获取 hash 片段信息
  * @return [hashPath, hashQuery, useHash]
  */
-export function getHashInfo(): [string, string, boolean] {
+export function getHashSegment(): [string, string] {
   const hash = window.location.hash;
   const index = hash.indexOf('?');
   if (index < 0) {
-    return [hash, '', false];
+    return [hash, ''];
   }
   const hashQuery = hash.substring(index + 1);
-  return [hash.substring(0, index), hashQuery, hashQuery.length > 0];
+  return [hash.substring(0, index), hashQuery];
 }

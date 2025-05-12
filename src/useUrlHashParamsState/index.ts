@@ -1,4 +1,4 @@
-import { getHashInfo, setWindowLocationHash, UrlParamsState } from '@houkunlin/use-url-state';
+import { getHashSegment, setWindowLocationHash, UrlParamsState } from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
@@ -19,7 +19,7 @@ import useUpdate from '../ahooks/useUpdate';
  */
 function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
   const update = useUpdate();
-  const [[hashPath, hashQuery], setHashInfo] = useState<[string, string, boolean]>(getHashInfo);
+  const [[hashPath, hashQuery], setHashInfo] = useState<[string, string]>(getHashSegment);
 
   const initialStateRef = useRef(
     typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {},
@@ -28,7 +28,7 @@ function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsS
 
   useEffect(() => {
     const fn = () => {
-      setHashInfo(getHashInfo());
+      setHashInfo(getHashSegment());
     };
     window.addEventListener('hashchange', fn);
     return () => {
