@@ -1,4 +1,5 @@
 import { UrlParamsState } from '@houkunlin/use-url-state';
+import isNil from '../lodash/isNil';
 
 /**
  * 把 URLSearchParams 转换成数据对象
@@ -34,25 +35,25 @@ export function toState<S = any>(urlSearchParams: URLSearchParams): Partial<{ [k
  * @param fn 回调方法
  */
 export function forEachUrlParamsState(state?: UrlParamsState, fn?: (key: string, value: string) => void) {
-  if (fn === null || fn === undefined) {
+  if (isNil(fn)) {
     return;
   }
   if (state instanceof URLSearchParams) {
     state.forEach((value, key) => fn(key, value));
     return;
   }
-  if (state === null || state === undefined) {
+  if (isNil(state)) {
     return;
   }
   const keys = Object.keys(state);
   for (const key of keys) {
     const o = state[key];
     if (!(o instanceof Array)) {
-      fn(key, `${o || ''}`);
+      fn(key, `${isNil(o) ? '' : o}`);
     } else {
       if (o.length !== 0) {
         o.forEach((value) => {
-          fn(key, `${value || ''}`);
+          fn(key, `${isNil(value) ? '' : value}`);
         });
       } else {
         // 保留空数组的值，使空数组 [] 与 [''] 的表现一致

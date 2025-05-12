@@ -8,6 +8,7 @@ import {
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
+import isNil from '../lodash/isNil';
 
 export type UseUrlParamsStateOptions = {
   /**
@@ -110,13 +111,7 @@ function useUrlParamsState(
         const value = newQuery.get(key);
         if (value !== null) {
           // 新设置的参数会追加到 <code>window.location.hash</code> 上
-          if (
-            options === null ||
-            options === undefined ||
-            options?.newParamsLocation === null ||
-            options?.newParamsLocation === undefined ||
-            options?.newParamsLocation === 'hash'
-          ) {
+          if (isNil(options) || isNil(options?.newParamsLocation) || options?.newParamsLocation === 'hash') {
             hashParams.append(key, value);
           } else {
             searchParams.append(key, value);
