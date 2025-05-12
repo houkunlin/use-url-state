@@ -5,26 +5,40 @@ import useMemoizedFn from '../ahooks/useMemoizedFn';
 
 export type UrlParamsState = Record<string, any> | URLSearchParams;
 
+export type UseUrlParamsStateOptions = {
+  /**
+   * 新参数追加到路径的位置：search | hash，默认追加到 hash 位置
+   */
+  newParamsLocation?: 'search' | 'hash';
+};
+
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
  * <p>
  *   参数读取顺序：
  *   <ul>
- *     <li><code>initialState</code> 初始参数</li>
+ *     <li><code>searchInitialState</code> 初始参数</li>
+ *     <li><code>hashInitialState</code> 初始参数</li>
  *     <li><code>window.location.search</code> 路径参数</li>
  *     <li><code>window.location.hash</code> Hash参数</li>
  *   </ul>
  * </p>
  * <p>
- *   新设置的参数会追加到 <code>window.location.hash</code> 上
+ *   新设置的参数默认会追加到 <code>window.location.hash</code> 上，可通过 <code>options.newParamsLocation</code> 设置。
  * </p>
  *
- * @param initialState 初始化参数信息
+ * @param searchInitialState search 初始化参数信息
+ * @param hashInitialState hash 初始化参数信息
+ * @param options 参数设置
  * @return [query, setQuery] query：URLSearchParams，setQuery：设置 URLSearchParams
  */
-function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
-  const [searchQueryParams, setSearchQueryParams] = useUrlSearchParamsState(initialState);
-  const [hashQueryParams, setHashQueryParams] = useUrlHashParamsState();
+function useUrlParamsState(
+  searchInitialState?: UrlParamsState | (() => UrlParamsState),
+  hashInitialState?: UrlParamsState | (() => UrlParamsState),
+  options?: UseUrlParamsStateOptions,
+) {
+  const [searchQueryParams, setSearchQueryParams] = useUrlSearchParamsState(searchInitialState);
+  const [hashQueryParams, setHashQueryParams] = useUrlHashParamsState(hashInitialState);
 
   const targetQuery = useMemo(() => {
     const urlSearchParams = new URLSearchParams();
@@ -91,7 +105,17 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
         const value = newQuery.get(key);
         if (value !== null) {
           // 新设置的参数会追加到 <code>window.location.hash</code> 上
-          hashParams.append(key, value);
+          if (
+            options === null ||
+            options === undefined ||
+            options?.newParamsLocation === null ||
+            options?.newParamsLocation === undefined ||
+            options?.newParamsLocation === 'hash'
+          ) {
+            hashParams.append(key, value);
+          } else {
+            searchParams.append(key, value);
+          }
         }
       }
     }

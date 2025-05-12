@@ -1,7 +1,7 @@
 # useUrlParamsState
 
 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息，以及设置查询信息，
-新设置的参数会追加到 <code>window.location.hash</code> 上。
+新设置的参数默认会追加到 <code>window.location.hash</code> 上，可通过 <code>options.newParamsLocation</code> 设置。
 
 ```js
 const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState();
@@ -23,12 +23,25 @@ useEffect(() => {
 
 ```js
 const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState();
-const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState({ count: 0, page: 1 });
-const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState(new URLSearchParams('count=0&page=1'));
+useUrlParamsState({ count: 0, page: 1 });
+useUrlParamsState({ count: 0, page: 1 }, {}, { newParamsLocation: 'search' });
+useUrlParamsState({ count: 0 }, { page: 1 });
+useUrlParamsState({ count: 0 }, { page: 1 }, { newParamsLocation: 'search' });
+useUrlParamsState(new URLSearchParams('count=0&page=1'));
+useUrlParamsState(new URLSearchParams('count=0'), new URLSearchParams('page=1'));
+useUrlParamsState(new URLSearchParams('count=0'), new URLSearchParams('page=1'), { newParamsLocation: 'search' });
 ```
 
 ### 参数列表
 
-| 参数         | 类型                                                | 说明       |
-| ------------ | --------------------------------------------------- | ---------- |
-| initialState | <code>Record<string, any> \| URLSearchParams</code> | 初始化参数 |
+| 参数               | 类型                                                | 说明                  |
+| ------------------ | --------------------------------------------------- | --------------------- |
+| searchInitialState | <code>Record<string, any> \| URLSearchParams</code> | search 初始化参数信息 |
+| hashInitialState   | <code>Record<string, any> \| URLSearchParams</code> | hash 初始化参数信息   |
+| options            | <code>UseUrlParamsStateOptions</code>               | 参数设置              |
+
+#### UseUrlParamsStateOptions
+
+| 参数              | 类型                            | 说明                                                               |
+| ----------------- | ------------------------------- | ------------------------------------------------------------------ |
+| newParamsLocation | <code>'search' \| 'hash'</code> | 新参数追加到路径的位置：`search` \| `hash`，默认追加到 `hash` 位置 |

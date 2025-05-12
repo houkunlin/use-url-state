@@ -2,7 +2,9 @@ import useUrlState from '@houkunlin/use-url-state';
 import React, { useEffect } from 'react';
 
 export default () => {
-  const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlState({ count: 0 });
+  const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlState<any, any>({
+    count: 0,
+  });
   const count = parseInt(query.count || '0');
   const searchSum0 = parseInt(searchQuery.sum0 || '0');
   const hashSum1 = parseInt(hashQuery.sum1 || '0');
@@ -59,7 +61,7 @@ export default () => {
       <button
         type="button"
         onClick={() => {
-          setSearchQuery({ sum0: searchSum0 + 1 });
+          setSearchQuery({ sum0: `${searchSum0 + 1}` });
         }}
       >
         改变 search sum0+1
@@ -67,7 +69,7 @@ export default () => {
       <button
         type="button"
         onClick={() => {
-          setSearchQuery({ sum0: 0 });
+          setSearchQuery({ sum0: '0' });
         }}
       >
         重置 search sum0=0
@@ -90,7 +92,7 @@ export default () => {
       <button
         type="button"
         onClick={() => {
-          setHashQuery({ sum1: hashSum1 + 1 });
+          setHashQuery({ sum1: `${hashSum1 + 1}` });
         }}
       >
         改变 hash sum1+1
@@ -98,7 +100,7 @@ export default () => {
       <button
         type="button"
         onClick={() => {
-          setHashQuery({ sum1: 0 });
+          setHashQuery({ sum1: '0' });
         }}
       >
         重置 hash sum1=0
