@@ -39,6 +39,9 @@ export default () => {
       >
         删除
       </button>
+      <div>
+        <pre><code>{JSON.stringify(query, null, 2)}</code></pre>
+      </div>
     </>
   );
 };

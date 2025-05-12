@@ -28,6 +28,9 @@ function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsS
   const [hashPath, hashQuery] = useMemo(() => {
     const hash = window.location.hash;
     const index = hash.indexOf('?');
+    if (index < 0) {
+      return [hash, '', window.location.search, false];
+    }
     return [hash.substring(0, index), hash.substring(index + 1)];
   }, [window.location.hash]);
 

@@ -48,6 +48,9 @@ export default () => {
       >
         删除
       </button>
+      <div>
+        <pre><code>{query.toString()}</code></pre>
+      </div>
     </>
   );
 };
