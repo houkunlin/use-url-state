@@ -17,9 +17,7 @@ export type UrlParamsState = Record<string, any> | URLSearchParams;
  *   </ul>
  * </p>
  * <p>
- *   <code>window.location.search</code> 和 <code>window.location.hash</code> 参数会合并，然后覆盖 <code>initialState</code> 参数；
- *   调用 setQuery 设置参数时，如果存在 <code>window.location.hash</code> 参数，则设置到 <code>window.location.hash</code> 参数上，
- *   否则设置到 <code>window.location.search</code> 参数上。
+ *   新设置的参数会追加到 <code>window.location.hash</code> 上
  * </p>
  *
  * @param initialState 初始化参数信息
@@ -27,7 +25,7 @@ export type UrlParamsState = Record<string, any> | URLSearchParams;
  */
 function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
   const update = useUpdate();
-  const [[hashPath, hashQuery, useHash], setHashInfo] = useState<[string, string, boolean]>(getHashInfo);
+  const [[hashPath, hashQuery], setHashInfo] = useState<[string, string, boolean]>(getHashInfo);
   const searchQuery = window.location.search;
 
   const initialStateRef = useRef(
@@ -45,16 +43,17 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
     };
   }, []);
 
+  const searchQueryParams = useMemo(() => new URLSearchParams(searchQuery), [searchQuery]);
+  const hashQueryParams = useMemo(() => new URLSearchParams(hashQuery), [hashQuery]);
+
   const targetQuery = useMemo(() => {
     const urlSearchParams = new URLSearchParams(initialStateRef.current ?? {});
 
-    const searchQueryParams = new URLSearchParams(searchQuery);
     for (const key of searchQueryParams.keys()) {
       if (urlSearchParams.has(key)) {
         urlSearchParams.delete(key);
       }
     }
-    const hashQueryParams = new URLSearchParams(hashQuery);
     for (const key of hashQueryParams.keys()) {
       if (urlSearchParams.has(key)) {
         urlSearchParams.delete(key);
@@ -69,7 +68,7 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
     }
 
     return urlSearchParams;
-  }, [hashPath, hashQuery, searchQuery /*, targetInitialStateStr*/]);
+  }, [searchQueryParams, hashQueryParams /*, targetInitialStateStr*/]);
 
   const setState = (s: React.SetStateAction<URLSearchParams>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
@@ -77,14 +76,64 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
     // 1. 如果 setState 后，search 没变化，就需要 update 来触发一次更新。比如 demo1 直接点击 clear，就需要 update 来触发更新。
     // 2. update 和 history 的更新会合并，不会造成多次更新
     update();
-    if (useHash) {
-      setWindowLocationHash(hashPath, newQuery);
-    } else {
-      setWindowLocationSearch(newQuery);
+    const searchParams = new URLSearchParams(searchQueryParams);
+    const hashParams = new URLSearchParams(hashQueryParams);
+
+    const firstKeys = new Set<string>();
+    for (const key of newQuery.keys()) {
+      // 变更 key 值
+      const value = newQuery.get(key);
+      if (value !== null) {
+        if (!firstKeys.has(key)) {
+          firstKeys.add(key);
+          if (searchParams.has(key)) {
+            searchParams.set(key, value);
+          }
+          if (hashParams.has(key)) {
+            hashParams.set(key, value);
+          }
+        } else {
+          if (searchParams.has(key)) {
+            searchParams.append(key, value);
+          }
+          if (hashParams.has(key)) {
+            hashParams.append(key, value);
+          }
+        }
+      }
     }
+
+    for (const key of searchParams.keys()) {
+      if (!newQuery.has(key)) {
+        // 删除不存在的 key
+        searchParams.delete(key);
+      }
+    }
+    for (const key of hashParams.keys()) {
+      if (!newQuery.has(key)) {
+        // 删除不存在的 key
+        hashParams.delete(key);
+      }
+    }
+
+    for (const key of newQuery.keys()) {
+      // 删除以前处理过的 KEY
+      if (searchParams.has(key) || hashParams.has(key)) {
+        newQuery.delete(key);
+      } else {
+        // 追加新的 key
+        const value = newQuery.get(key);
+        if (value !== null) {
+          hashParams.append(key, value);
+        }
+      }
+    }
+
+    setWindowLocationHash(hashPath, hashParams);
+    setWindowLocationSearch(searchParams);
   };
 
-  return [targetQuery, useMemoizedFn(setState)] as const;
+  return [targetQuery, useMemoizedFn(setState), { searchQuery, hashQuery }] as const;
 }
 
 export default useUrlParamsState;
