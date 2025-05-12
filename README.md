@@ -29,26 +29,50 @@ import useUrlState, {
   useUrlSearchState,
 } from '@houkunlin/use-url-state';
 
-const [query, setQuery] = useUrlState();
-const [query, setQuery] = useUrlState({ count: 0, page: 1 });
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlState();
+useUrlState({ count: 0, page: 1 });
+useUrlState({ count: 0 }, { page: 1 });
+useUrlState({ count: 0 }, { page: 1 }, { newParamsLocation: 'hash', initParamsToSearch: true, initParamsToHash: true });
 
-const [query, setQuery] = useUrlParamsState();
-const [query, setQuery] = useUrlParamsState({ count: 0, page: 1 });
-const [query, setQuery] = useUrlParamsState(new URLSearchParams('count=0&page=1'));
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState();
+useUrlParamsState({ count: 0, page: 1 });
+useUrlParamsState({ count: 0 }, { page: 1 });
+useUrlParamsState(
+  { count: 0 },
+  { page: 1 },
+  {
+    newParamsLocation: 'search',
+    initParamsToSearch: true,
+    initParamsToHash: true,
+  },
+);
+useUrlParamsState(new URLSearchParams('count=0&page=1'));
+useUrlParamsState(new URLSearchParams('count=0'), new URLSearchParams('page=1'));
+useUrlParamsState(new URLSearchParams('count=0'), new URLSearchParams('page=1'), {
+  newParamsLocation: 'search',
+  initParamsToSearch: true,
+  initParamsToHash: true,
+});
 
 const [query, setQuery] = useUrlHashState();
 const [query, setQuery] = useUrlHashState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlHashState({ count: 0, page: 1 }, { initParamsToHash: true });
 
 const [query, setQuery] = useUrlHashParamsState();
 const [query, setQuery] = useUrlHashParamsState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlHashParamsState({ count: 0, page: 1 }, { initParamsToHash: true });
 const [query, setQuery] = useUrlHashParamsState(new URLSearchParams('count=0&page=1'));
+const [query, setQuery] = useUrlHashParamsState(new URLSearchParams('count=0&page=1'), { initParamsToHash: true });
 
 const [query, setQuery] = useUrlSearchState();
 const [query, setQuery] = useUrlSearchState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlSearchState({ count: 0, page: 1 }, { initParamsToSearch: true });
 
 const [query, setQuery] = useUrlSearchParamsState();
 const [query, setQuery] = useUrlSearchParamsState({ count: 0, page: 1 });
+const [query, setQuery] = useUrlSearchParamsState({ count: 0, page: 1 }, { initParamsToSearch: true });
 const [query, setQuery] = useUrlSearchParamsState(new URLSearchParams('count=0&page=1'));
+const [query, setQuery] = useUrlSearchParamsState(new URLSearchParams('count=0&page=1'), { initParamsToSearch: true });
 ```
 
 ## 文档

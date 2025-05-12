@@ -39,6 +39,18 @@ useUrlState({ count: 0 }, { page: 1 }, { newParamsLocation: 'search' });
 
 #### UseUrlParamsStateOptions
 
-| 参数              | 类型                            | 说明                                                               |
-| ----------------- | ------------------------------- | ------------------------------------------------------------------ |
-| newParamsLocation | <code>'search' \| 'hash'</code> | 新参数追加到路径的位置：`search` \| `hash`，默认追加到 `hash` 位置 |
+```ts
+type UseUrlParamsStateOptions = {
+  /**
+   * 新参数追加到路径的位置：search | hash，默认追加到 hash 位置
+   */
+  newParamsLocation?: 'search' | 'hash';
+} & UseUrlSearchParamsStateOptions &
+  UseUrlHashParamsStateOptions;
+```
+
+| 参数               | 类型                            | 说明                                                               |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------ |
+| newParamsLocation  | <code>'search' \| 'hash'</code> | 新参数追加到路径的位置：`search` \| `hash`，默认追加到 `hash` 位置 |
+| initParamsToSearch | <code>boolean</code>            | 初始参数是否设置到 search                                          |
+| initParamsToHash   | <code>boolean</code>            | 初始参数是否设置到 hash                                            |
