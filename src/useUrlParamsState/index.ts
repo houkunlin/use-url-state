@@ -1,8 +1,7 @@
-import { getHashInfo, setWindowLocationHash, setWindowLocationSearch } from '@houkunlin/use-url-state';
+import { useUrlHashParamsState, useUrlSearchParamsState } from '@houkunlin/use-url-state';
 import type * as React from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
-import useUpdate from '../ahooks/useUpdate';
 
 export type UrlParamsState = Record<string, any> | URLSearchParams;
 
@@ -24,41 +23,11 @@ export type UrlParamsState = Record<string, any> | URLSearchParams;
  * @return [query, setQuery] query：URLSearchParams，setQuery：设置 URLSearchParams
  */
 function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
-  const update = useUpdate();
-  const [[hashPath, hashQuery], setHashInfo] = useState<[string, string, boolean]>(getHashInfo);
-  const searchQuery = window.location.search;
-
-  const initialStateRef = useRef(
-    typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {},
-  );
-  // const targetInitialStateStr = JSON.stringify(initialStateRef.current);
-
-  useEffect(() => {
-    const fn = () => {
-      setHashInfo(getHashInfo());
-    };
-    window.addEventListener('hashchange', fn);
-    return () => {
-      window.removeEventListener('hashchange', fn);
-    };
-  }, []);
-
-  const searchQueryParams = useMemo(() => new URLSearchParams(searchQuery), [searchQuery]);
-  const hashQueryParams = useMemo(() => new URLSearchParams(hashQuery), [hashQuery]);
+  const [searchQueryParams, setSearchQueryParams] = useUrlSearchParamsState(initialState);
+  const [hashQueryParams, setHashQueryParams] = useUrlHashParamsState();
 
   const targetQuery = useMemo(() => {
-    const urlSearchParams = new URLSearchParams(initialStateRef.current ?? {});
-
-    for (const key of searchQueryParams.keys()) {
-      if (urlSearchParams.has(key)) {
-        urlSearchParams.delete(key);
-      }
-    }
-    for (const key of hashQueryParams.keys()) {
-      if (urlSearchParams.has(key)) {
-        urlSearchParams.delete(key);
-      }
-    }
+    const urlSearchParams = new URLSearchParams();
 
     for (const [key, value] of searchQueryParams) {
       urlSearchParams.append(key, value);
@@ -73,9 +42,6 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
   const setState = (s: React.SetStateAction<URLSearchParams>) => {
     const newQuery = typeof s === 'function' ? s(new URLSearchParams(targetQuery)) : s;
 
-    // 1. 如果 setState 后，search 没变化，就需要 update 来触发一次更新。比如 demo1 直接点击 clear，就需要 update 来触发更新。
-    // 2. update 和 history 的更新会合并，不会造成多次更新
-    update();
     const searchParams = new URLSearchParams(searchQueryParams);
     const hashParams = new URLSearchParams(hashQueryParams);
 
@@ -124,31 +90,14 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
         // 追加新的 key
         const value = newQuery.get(key);
         if (value !== null) {
+          // 新设置的参数会追加到 <code>window.location.hash</code> 上
           hashParams.append(key, value);
         }
       }
     }
 
-    setWindowLocationHash(hashPath, hashParams);
-    setWindowLocationSearch(searchParams);
-  };
-
-  const setSearchState = (s: React.SetStateAction<URLSearchParams>) => {
-    const newQuery = typeof s === 'function' ? s(new URLSearchParams(searchQueryParams)) : s;
-
-    // 1. 如果 setState 后，search 没变化，就需要 update 来触发一次更新。比如 demo1 直接点击 clear，就需要 update 来触发更新。
-    // 2. update 和 history 的更新会合并，不会造成多次更新
-    update();
-    setWindowLocationSearch(newQuery);
-  };
-
-  const setHashState = (s: React.SetStateAction<URLSearchParams>) => {
-    const newQuery = typeof s === 'function' ? s(new URLSearchParams(hashQueryParams)) : s;
-
-    // 1. 如果 setState 后，search 没变化，就需要 update 来触发一次更新。比如 demo1 直接点击 clear，就需要 update 来触发更新。
-    // 2. update 和 history 的更新会合并，不会造成多次更新
-    update();
-    setWindowLocationHash(hashPath, newQuery);
+    setHashQueryParams(hashParams);
+    setSearchQueryParams(searchParams);
   };
 
   return [
@@ -157,8 +106,8 @@ function useUrlParamsState(initialState?: UrlParamsState | (() => UrlParamsState
     {
       searchQuery: searchQueryParams,
       hashQuery: hashQueryParams,
-      setSearchQuery: useMemoizedFn(setSearchState),
-      setHashQuery: useMemoizedFn(setHashState),
+      setSearchQuery: setSearchQueryParams,
+      setHashQuery: setHashQueryParams,
     },
   ] as const;
 }
