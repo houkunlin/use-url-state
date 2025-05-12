@@ -1,4 +1,6 @@
 import { useUrlHashParamsState, useUrlSearchParamsState } from '@houkunlin/use-url-state';
+import { UseUrlHashParamsStateOptions } from '@houkunlin/use-url-state/useUrlHashParamsState';
+import { UseUrlSearchParamsStateOptions } from '@houkunlin/use-url-state/useUrlSearchParamsState';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
@@ -10,7 +12,8 @@ export type UseUrlParamsStateOptions = {
    * 新参数追加到路径的位置：search | hash，默认追加到 hash 位置
    */
   newParamsLocation?: 'search' | 'hash';
-};
+} & UseUrlSearchParamsStateOptions &
+  UseUrlHashParamsStateOptions;
 
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
@@ -37,8 +40,8 @@ function useUrlParamsState(
   hashInitialState?: UrlParamsState | (() => UrlParamsState),
   options?: UseUrlParamsStateOptions,
 ) {
-  const [searchQueryParams, setSearchQueryParams] = useUrlSearchParamsState(searchInitialState);
-  const [hashQueryParams, setHashQueryParams] = useUrlHashParamsState(hashInitialState);
+  const [searchQueryParams, setSearchQueryParams] = useUrlSearchParamsState(searchInitialState, options);
+  const [hashQueryParams, setHashQueryParams] = useUrlHashParamsState(hashInitialState, options);
 
   const targetQuery = useMemo(() => {
     const urlSearchParams = new URLSearchParams();

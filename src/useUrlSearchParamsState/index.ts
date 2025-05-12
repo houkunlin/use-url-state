@@ -4,6 +4,13 @@ import { useEffect, useMemo, useRef } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
 import useUpdate from '../ahooks/useUpdate';
 
+export type UseUrlSearchParamsStateOptions = {
+  /**
+   * 初始参数是否设置到 search
+   */
+  initParamsToSearch?: boolean;
+};
+
 /**
  * 从 <code>window.location.search</code>中读取查询参数信息。
  * <p>
@@ -15,9 +22,13 @@ import useUpdate from '../ahooks/useUpdate';
  * </p>
  *
  * @param initialState 初始化参数信息
+ * @param options 参数设置
  * @return [query, setQuery] query：URLSearchParams，setQuery：设置 URLSearchParams
  */
-function useUrlSearchParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
+function useUrlSearchParamsState(
+  initialState?: UrlParamsState | (() => UrlParamsState),
+  options?: UseUrlSearchParamsStateOptions,
+) {
   const update = useUpdate();
   const searchQuery = window.location.search;
 
@@ -53,7 +64,9 @@ function useUrlSearchParamsState(initialState?: UrlParamsState | (() => UrlParam
   };
 
   useEffect(() => {
-    setWindowLocationSearch(targetQuery);
+    if (options?.initParamsToSearch) {
+      setWindowLocationSearch(targetQuery);
+    }
   }, []);
 
   return [targetQuery, useMemoizedFn(setState)] as const;

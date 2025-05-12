@@ -22,8 +22,11 @@ useEffect(() => {
 
 ```js
 const [query, setQuery] = useUrlSearchParamsState();
-const [query, setQuery] = useUrlSearchParamsState({ count: 0, page: 1 });
-const [query, setQuery] = useUrlSearchParamsState(new URLSearchParams('count=0&page=1'));
+useUrlSearchParamsState({}, { initParamsToSearch: true });
+useUrlSearchParamsState({ count: 0, page: 1 });
+useUrlSearchParamsState({ count: 0, page: 1 }, { initParamsToSearch: true });
+useUrlSearchParamsState(new URLSearchParams('count=0&page=1'));
+useUrlSearchParamsState(new URLSearchParams('count=0&page=1'), { initParamsToSearch: true });
 ```
 
 ### 参数列表
@@ -31,3 +34,10 @@ const [query, setQuery] = useUrlSearchParamsState(new URLSearchParams('count=0&p
 | 参数         | 类型                                                | 说明       |
 | ------------ | --------------------------------------------------- | ---------- |
 | initialState | <code>Record<string, any> \| URLSearchParams</code> | 初始化参数 |
+| options      | <code>UseUrlSearchParamsStateOptions</code>         | 参数设置   |
+
+#### UseUrlSearchParamsStateOptions
+
+| 参数               | 类型                 | 说明                      |
+| ------------------ | -------------------- | ------------------------- |
+| initParamsToSearch | <code>boolean</code> | 初始参数是否设置到 search |

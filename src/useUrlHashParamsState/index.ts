@@ -4,6 +4,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
 import useUpdate from '../ahooks/useUpdate';
 
+export type UseUrlHashParamsStateOptions = {
+  /**
+   * 初始参数是否设置到 hash
+   */
+  initParamsToHash?: boolean;
+};
+
 /**
  * 从 <code>window.location.hash</code> 中读取查询参数信息。
  * <p>
@@ -15,9 +22,13 @@ import useUpdate from '../ahooks/useUpdate';
  * </p>
  *
  * @param initialState 初始化参数信息
+ * @param options 参数设置
  * @return [query, setQuery] query：URLSearchParams，setQuery：设置 URLSearchParams
  */
-function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
+function useUrlHashParamsState(
+  initialState?: UrlParamsState | (() => UrlParamsState),
+  options?: UseUrlHashParamsStateOptions,
+) {
   const update = useUpdate();
   const [[hashPath, hashQuery], setHashInfo] = useState<[string, string]>(getHashSegment);
 
@@ -63,7 +74,9 @@ function useUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsS
   };
 
   useEffect(() => {
-    setWindowLocationHash(hashPath, targetQuery);
+    if (options?.initParamsToHash) {
+      setWindowLocationHash(hashPath, targetQuery);
+    }
   }, []);
 
   return [targetQuery, useMemoizedFn(setState)] as const;
