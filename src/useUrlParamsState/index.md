@@ -4,7 +4,7 @@
 新设置的参数会追加到 <code>window.location.hash</code> 上。
 
 ```js
-const [query, setQuery] = useUrlParamsState();
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState();
 
 useEffect(() => {
   // 在地址栏 search/hash 查询参数变化时
@@ -22,9 +22,9 @@ useEffect(() => {
 ### API
 
 ```js
-const [query, setQuery] = useUrlParamsState();
-const [query, setQuery] = useUrlParamsState({ count: 0, page: 1 });
-const [query, setQuery] = useUrlParamsState(new URLSearchParams('count=0&page=1'));
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState();
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState({ count: 0, page: 1 });
+const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState(new URLSearchParams('count=0&page=1'));
 ```
 
 ### 参数列表

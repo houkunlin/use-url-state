@@ -6,6 +6,10 @@ import { toObj } from '../utils';
 
 export type UrlState = Record<string, any>;
 
+function stateToURLSearchParams(state: UrlState) {
+  return new URLSearchParams(state);
+}
+
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
  * <p>
@@ -28,23 +32,38 @@ export type UrlState = Record<string, any>;
 function useUrlState<S extends UrlState = UrlState>(initialState?: S | (() => S)) {
   type State = Partial<{ [key in keyof S]: string }>;
 
-  const [query, setQuery] = useUrlParamsState(initialState);
+  const [query, setQuery, { searchQuery, hashQuery, setSearchQuery, setHashQuery }] = useUrlParamsState(initialState);
 
   const targetQuery: State = useMemo(() => toObj(query), [query]);
+  const searchQueryState: State = useMemo(() => toObj(searchQuery), [searchQuery]);
+  const hashQueryState: State = useMemo(() => toObj(hashQuery), [hashQuery]);
 
   const setState = (s: React.SetStateAction<State>) => {
     const newQuery = typeof s === 'function' ? s(targetQuery) : s;
 
-    const urlSearchParams = new URLSearchParams();
-    for (const key of Object.keys(newQuery)) {
-      // @ts-ignore
-      urlSearchParams.append(key, newQuery[key]);
-    }
+    setQuery(stateToURLSearchParams(newQuery));
+  };
+  const setSearchState = (s: React.SetStateAction<State>) => {
+    const newQuery = typeof s === 'function' ? s(searchQueryState) : s;
 
-    setQuery(urlSearchParams);
+    setSearchQuery(stateToURLSearchParams(newQuery));
+  };
+  const setHashState = (s: React.SetStateAction<State>) => {
+    const newQuery = typeof s === 'function' ? s(hashQueryState) : s;
+
+    setHashQuery(stateToURLSearchParams(newQuery));
   };
 
-  return [targetQuery, useMemoizedFn(setState)] as const;
+  return [
+    targetQuery,
+    useMemoizedFn(setState),
+    {
+      searchQuery: searchQueryState,
+      hashQuery: hashQueryState,
+      setSearchQuery: useMemoizedFn(setSearchState),
+      setHashQuery: useMemoizedFn(setHashState),
+    },
+  ] as const;
 }
 
 export default useUrlState;
