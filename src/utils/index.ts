@@ -50,9 +50,14 @@ export function forEachUrlParamsState(state?: UrlParamsState, fn?: (key: string,
     if (!(o instanceof Array)) {
       fn(key, `${o || ''}`);
     } else {
-      o.forEach((value) => {
-        fn(key, `${value || ''}`);
-      });
+      if (o.length !== 0) {
+        o.forEach((value) => {
+          fn(key, `${value || ''}`);
+        });
+      } else {
+        // 保留空数组的值，使空数组 [] 与 [''] 的表现一致
+        fn(key, '');
+      }
     }
   }
 }
