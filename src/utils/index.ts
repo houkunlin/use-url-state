@@ -74,6 +74,29 @@ export function toURLSearchParams(state?: UrlParamsState) {
 }
 
 /**
+ * 使用 PopStateEvent 创建 popstate 事件对象
+ * @param state window.history.state
+ * @param originalMethodName 原始事件名
+ * @see https://juejin.cn/post/7287955337524281401
+ */
+function createPopStateEvent(state: any, originalMethodName: any) {
+  let evt;
+  try {
+    evt = new PopStateEvent('popstate', { state });
+  } catch (err) {
+    // IE 11
+    evt = document.createEvent('PopStateEvent');
+    // @ts-ignore
+    evt.initPopStateEvent('popstate', false, false, state);
+  }
+  // @ts-ignore
+  evt.singleSpa = true;
+  // @ts-ignore
+  evt.singleSpaTrigger = originalMethodName;
+  return evt;
+}
+
+/**
  * 设置 window.location.hash 值
  * @param hashPath
  * @param urlSearchParams
@@ -94,10 +117,19 @@ export function setWindowLocationHash(hashPath: string, urlSearchParams: URLSear
 export function setWindowLocationSearch(urlSearchParams: URLSearchParams) {
   const query = urlSearchParams.toString();
   // window.location.search = query;
+  // 更新前的 url
+  const urlBefore = window.location.href;
   if (query.length !== 0) {
     window.history.replaceState({}, '', `${window.location.pathname}?${query}${window.location.hash}`);
   } else {
     window.history.replaceState({}, '', `${window.location.pathname}${window.location.hash}`);
+  }
+  // 更新后的 url
+  const urlAfter = window.location.href;
+
+  if (urlBefore !== urlAfter) {
+    // @see https://juejin.cn/post/7287955337524281401
+    window.dispatchEvent(createPopStateEvent(window.history.state, 'replaceState'));
   }
 }
 

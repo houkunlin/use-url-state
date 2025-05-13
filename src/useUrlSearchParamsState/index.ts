@@ -37,6 +37,16 @@ function useUrlSearchParamsState(
   );
   // const targetInitialStateStr = JSON.stringify(initialStateRef.current);
 
+  useEffect(() => {
+    const fn = () => {
+      update();
+    };
+    window.addEventListener('popstate', fn);
+    return () => {
+      window.addEventListener('popstate', fn);
+    };
+  }, []);
+
   const targetQuery = useMemo(() => {
     const urlSearchParams = toURLSearchParams(initialStateRef.current);
 
