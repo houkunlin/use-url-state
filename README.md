@@ -113,7 +113,7 @@ export type UseUrlParamsStateOptions = {
   UseUrlHashParamsStateOptions;
 ```
 
-## 普通对象返回值的示例说明
+## 普通对象返回值的说明
 
 所有 hooks 的入参 `UrlState` 初始化参数支持一级数组参数，但 `useUrlSearchState` `useUrlHashState` `useUrlState`
 返回的普通对象会经过特殊处理。
