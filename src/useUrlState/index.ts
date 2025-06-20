@@ -1,8 +1,37 @@
-import { toURLSearchParams, UrlState, useUrlParamsState, UseUrlParamsStateOptions } from '@houkunlin/use-url-state';
+import {
+  getUrlParamsState,
+  toURLSearchParams,
+  UrlState,
+  useUrlParamsState,
+  UseUrlParamsStateOptions,
+} from '@houkunlin/use-url-state';
 import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
 import { toState } from '../utils';
+
+/**
+ * 直接从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
+ * <p>
+ *   参数读取顺序：
+ *   <ul>
+ *     <li><code>searchInitialState</code> 初始参数</li>
+ *     <li><code>hashInitialState</code> 初始参数</li>
+ *     <li><code>window.location.search</code> 路径参数</li>
+ *     <li><code>window.location.hash</code> Hash参数</li>
+ *   </ul>
+ * </p>
+ * @param searchInitialState search 初始化参数信息
+ * @param hashInitialState hash 初始化参数信息
+ */
+export function getUrlState<S1 extends UrlState = UrlState, S2 extends UrlState = UrlState, S_ALL = S1 & S2>(
+  searchInitialState?: S1 | (() => S1),
+  hashInitialState?: S2 | (() => S2),
+) {
+  const query = getUrlParamsState(searchInitialState, hashInitialState);
+
+  return toState(query) as S_ALL;
+}
 
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。

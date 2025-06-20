@@ -12,6 +12,37 @@ export type UseUrlSearchParamsStateOptions = {
 };
 
 /**
+ * 直接获取 <code>window.location.search</code> 中查询参数信息
+ * <p>
+ *   参数读取顺序：
+ *   <ul>
+ *     <li><code>initialState</code> 初始参数</li>
+ *     <li><code>window.location.search</code> 路径参数</li>
+ *   </ul>
+ * </p>
+ * @param initialState 初始化参数
+ */
+export function getUrlSearchParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
+  const initialStateRef =
+    typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {};
+
+  const urlSearchParams = toURLSearchParams(initialStateRef);
+
+  const searchQueryParams = new URLSearchParams(window.location.search);
+  for (const key of searchQueryParams.keys()) {
+    if (urlSearchParams.has(key)) {
+      urlSearchParams.delete(key);
+    }
+  }
+
+  for (const [key, value] of searchQueryParams) {
+    urlSearchParams.append(key, value);
+  }
+
+  return urlSearchParams;
+}
+
+/**
  * 从 <code>window.location.search</code>中读取查询参数信息。
  * <p>
  *   参数读取顺序：

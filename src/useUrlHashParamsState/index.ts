@@ -12,6 +12,40 @@ export type UseUrlHashParamsStateOptions = {
 };
 
 /**
+ * 直接获取 <code>window.location.hash</code> 中读取查询参数信息
+ * <p>
+ *   参数读取顺序：
+ *   <ul>
+ *     <li><code>initialState</code> 初始参数</li>
+ *     <li><code>window.location.hash</code> Hash参数</li>
+ *   </ul>
+ * </p>
+ * @param initialState 初始化参数信息
+ */
+export function getUrlHashParamsState(initialState?: UrlParamsState | (() => UrlParamsState)) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, hashQuery] = getHashSegment();
+
+  const initialStateRef =
+    typeof initialState === 'function' ? (initialState as () => UrlParamsState)() : initialState || {};
+
+  const urlSearchParams = toURLSearchParams(initialStateRef);
+
+  const hashQueryParams = new URLSearchParams(hashQuery);
+  for (const key of hashQueryParams.keys()) {
+    if (urlSearchParams.has(key)) {
+      urlSearchParams.delete(key);
+    }
+  }
+
+  for (const [key, value] of hashQueryParams) {
+    urlSearchParams.append(key, value);
+  }
+
+  return urlSearchParams;
+}
+
+/**
  * 从 <code>window.location.hash</code> 中读取查询参数信息。
  * <p>
  *   参数读取顺序：

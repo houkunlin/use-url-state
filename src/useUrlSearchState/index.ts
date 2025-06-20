@@ -1,4 +1,5 @@
 import {
+  getUrlSearchParamsState,
   toURLSearchParams,
   UrlState,
   useUrlSearchParamsState,
@@ -8,6 +9,25 @@ import type * as React from 'react';
 import { useMemo } from 'react';
 import useMemoizedFn from '../ahooks/useMemoizedFn';
 import { toState } from '../utils';
+
+/**
+ * 直接从 <code>window.location.search</code>中读取查询参数信息
+ * <p>
+ *   参数读取顺序：
+ *   <ul>
+ *     <li><code>initialState</code> 初始参数</li>
+ *     <li><code>window.location.search</code> 路径参数</li>
+ *   </ul>
+ * </p>
+ * @param initialState 初始化参数信息
+ */
+export function getUrlSearchState<S extends UrlState = UrlState>(initialState?: S | (() => S)) {
+  type State = Partial<{ [key in keyof S]: string }>;
+
+  const query = getUrlSearchParamsState(initialState);
+
+  return toState(query) as State;
+}
 
 /**
  * 从 <code>window.location.search</code>中读取查询参数信息。

@@ -1,4 +1,6 @@
 import {
+  getUrlHashParamsState,
+  getUrlSearchParamsState,
   UrlParamsState,
   useUrlHashParamsState,
   UseUrlHashParamsStateOptions,
@@ -17,6 +19,39 @@ export type UseUrlParamsStateOptions = {
   newParamsLocation?: 'search' | 'hash';
 } & UseUrlSearchParamsStateOptions &
   UseUrlHashParamsStateOptions;
+
+/**
+ * 直接从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息
+ * <p>
+ *   参数读取顺序：
+ *   <ul>
+ *     <li><code>searchInitialState</code> 初始参数</li>
+ *     <li><code>hashInitialState</code> 初始参数</li>
+ *     <li><code>window.location.search</code> 路径参数</li>
+ *     <li><code>window.location.hash</code> Hash参数</li>
+ *   </ul>
+ * </p>
+ * @param searchInitialState search 初始化参数信息
+ * @param hashInitialState hash 初始化参数信息
+ */
+export function getUrlParamsState(
+  searchInitialState?: UrlParamsState | (() => UrlParamsState),
+  hashInitialState?: UrlParamsState | (() => UrlParamsState),
+) {
+  const searchQueryParams = getUrlSearchParamsState(searchInitialState);
+  const hashQueryParams = getUrlHashParamsState(hashInitialState);
+
+  const urlSearchParams = new URLSearchParams();
+
+  for (const [key, value] of searchQueryParams) {
+    urlSearchParams.append(key, value);
+  }
+  for (const [key, value] of hashQueryParams) {
+    urlSearchParams.append(key, value);
+  }
+
+  return urlSearchParams;
+}
 
 /**
  * 从 <code>window.location.search</code> 和 <code>window.location.hash</code> 中读取查询参数信息。
