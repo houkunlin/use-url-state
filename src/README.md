@@ -59,7 +59,9 @@ export type UseUrlParamsStateOptions = {
 所有 hooks 的入参 `UrlState` 初始化参数支持一级数组参数，但 `useUrlSearchState` `useUrlHashState` `useUrlState`
 返回的普通对象会经过特殊处理。
 
-其中 `''`_(空字符串)_ `null` `undefined` `[]` `['']` `[null]` `[undefined]` 都将被序列化成空字符串 `''` 值，解析也将按照空字符串来处理。
+其中 `''`_(空字符串)_ `null` `[]` `['']` `[null]` 都将被序列化成空字符串 `''` 值，解析也将按照空字符串来处理。
+
+`undefined` `[undefined]` 则视为删除 key，不存在此 key。
 
 如果数组仅有 1 个值时，不以数组形式返回，如果参数 key 以 `[]` 中括号结尾（例如：`userIds[]`）则强制以数组形式返回。
 

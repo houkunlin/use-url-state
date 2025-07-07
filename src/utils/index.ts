@@ -39,7 +39,11 @@ export function forEachUrlParamsState(state?: UrlParamsState, fn?: (key: string,
     return;
   }
   if (state instanceof URLSearchParams) {
-    state.forEach((value, key) => fn(key, value));
+    state.forEach((value, key) => {
+      if (value !== undefined) {
+        fn(key, value);
+      }
+    });
     return;
   }
   if (isNil(state)) {
@@ -48,12 +52,17 @@ export function forEachUrlParamsState(state?: UrlParamsState, fn?: (key: string,
   const keys = Object.keys(state);
   for (const key of keys) {
     const o = state[key];
+    if (o === undefined) {
+      continue;
+    }
     if (!(o instanceof Array)) {
       fn(key, `${isNil(o) ? '' : o}`);
     } else {
       if (o.length !== 0) {
         o.forEach((value) => {
-          fn(key, `${isNil(value) ? '' : value}`);
+          if (value !== undefined) {
+            fn(key, `${isNil(value) ? '' : value}`);
+          }
         });
       } else {
         // 保留空数组的值，使空数组 [] 与 [''] 的表现一致
