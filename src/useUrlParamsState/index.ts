@@ -124,26 +124,32 @@ function useUrlParamsState(
       }
     }
 
-    for (const key of searchParams.keys()) {
+    const searchParamsKeys = [...searchParams.keys()];
+    for (const key of searchParamsKeys) {
       if (!newQuery.has(key)) {
         // 删除不存在的 key
         searchParams.delete(key);
       }
     }
-    for (const key of hashParams.keys()) {
+    const hashParamsKeys = [...hashParams.keys()];
+    for (const key of hashParamsKeys) {
       if (!newQuery.has(key)) {
         // 删除不存在的 key
         hashParams.delete(key);
       }
     }
 
-    for (const key of newQuery.keys()) {
+    const newQueryKeys = [...newQuery.keys()];
+    for (const key of newQueryKeys) {
       // 删除以前处理过的 KEY
       if (searchParams.has(key) || hashParams.has(key)) {
         newQuery.delete(key);
       } else {
         // 追加新的 key
         const value = newQuery.get(key);
+        if (value === undefined) {
+          continue;
+        }
         if (value !== null) {
           // 新设置的参数会追加到 <code>window.location.hash</code> 上
           if (isNil(options) || isNil(options?.newParamsLocation) || options?.newParamsLocation === 'hash') {
